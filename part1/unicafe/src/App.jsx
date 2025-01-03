@@ -42,21 +42,32 @@ const Positive = ({good, neutral, bad}) => {
   )
 }
 
+const FeedbackUnavailable = () => {
+  return (
+    <p>No feedback given</p>
+  )
+}
+
 const Statistics = (props) => {
   const good = props.good
   const neutral = props.neutral
   const bad = props.bad
-  return (
-    <>
-      <StatisticsHeader />
-      <Statistic text={"good"} value={good} />
-      <Statistic text={"neutral"} value={neutral} />
-      <Statistic text={"bad"} value={bad} />
-      <Total good={good} neutral={neutral} bad={bad} />
-      <Average good={good} neutral={neutral} bad={bad} />
-      <Positive good={good} neutral={neutral} bad={bad} />
-    </>
-  )
+  if (good !== 0 || neutral !== 0 || bad !== 0) {
+    return (
+      <>
+        <Statistic text={"good"} value={good} />
+        <Statistic text={"neutral"} value={neutral} />
+        <Statistic text={"bad"} value={bad} />
+        <Total good={good} neutral={neutral} bad={bad} />
+        <Average good={good} neutral={neutral} bad={bad} />
+        <Positive good={good} neutral={neutral} bad={bad} />
+      </>
+    )
+  } else {
+    return (
+      <FeedbackUnavailable />
+    )
+  }
 }
 
 
@@ -72,6 +83,7 @@ const App = () => {
       <Button onClick={() => setGood(good + 1)} text={"good"} />
       <Button onClick={() => setNeutral(neutral + 1)} text={"neutral"} />
       <Button onClick={() => setBad(bad + 1)} text={"bad"} />
+      <StatisticsHeader />
       <Statistics good={good} neutral={neutral} bad={bad} />
     </div>
   )
