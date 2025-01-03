@@ -6,7 +6,7 @@ const Button = ({ onClick, text }) => <button onClick={onClick}>{text}</button>
 
 const StatisticsHeader = () => <h1>statistics</h1>
 
-const StatisticLine = ({ text, value }) => <p>{text} {value}</p>
+const StatisticLine = ({ text, value }) => <tr><td>{text}</td><td>{value}</td></tr>
 
 const Total = ({good, neutral, bad}) => {
   const total = good + neutral + bad
@@ -35,14 +35,14 @@ const Statistics = (props) => {
   const bad = props.bad
   if (good !== 0 || neutral !== 0 || bad !== 0) {
     return (
-      <>
+      <table>
         <StatisticLine text={"good"} value={good} />
         <StatisticLine text={"neutral"} value={neutral} />
         <StatisticLine text={"bad"} value={bad} />
         <Total good={good} neutral={neutral} bad={bad} />
         <Average good={good} neutral={neutral} bad={bad} />
         <Positive good={good} neutral={neutral} bad={bad} />
-      </>
+      </table>
     )
   } else {
     return (
@@ -62,14 +62,14 @@ const App = () => {
   const onClickNeutral = () => setNeutral(neutral + 1)
   const onClickBad = () => setBad(bad + 1)
   return (
-    <div>
+    <>
       <FeedbackHeader />
       <Button onClick={onClickGood} text={"good"} />
       <Button onClick={onClickNeutral} text={"neutral"} />
       <Button onClick={onClickBad} text={"bad"} />
       <StatisticsHeader />
       <Statistics good={good} neutral={neutral} bad={bad} />
-    </div>
+    </>
   )
 }
 
