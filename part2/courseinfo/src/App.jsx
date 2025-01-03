@@ -9,27 +9,22 @@ const Part = ({ part }) => {
   const name = part.name
   const exercises = part.exercises
   return (
-    <p>{name} {exercises}</p>
+    <p key={part.id}>{name} {exercises}</p>
   )
 }
 
 const Content = ({ course }) => {
   const parts = course.parts
+  // console.log("From Content Comp:", parts)
   return (
     <div>
-      { <Part part={parts[0]} /> }
-      { <Part part={parts[1]} /> }
-      { <Part part={parts[2]} /> }
-      { <Part part={parts[3]} /> }
+      { parts.map((part) => <Part key={part.id} part={part} />) }
     </div>
   )
 }
 
 const Total = ({ course }) => {
-  let total = 0;
-  for (var exercise of course.parts.map((part) => part.exercises)) { 
-    total += exercise
-  }
+  let total = course.parts.reduce((sum, part) => sum + part.exercises, 0)
   return (
     <p><b>total of {total} exercises</b></p>
   )
