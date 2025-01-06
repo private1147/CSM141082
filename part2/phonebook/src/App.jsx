@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react'
 import personServices from './services/persons'
 
-const Persons = ({ persons, showAll, filteredPersons }) => {
+const Persons = ({ persons, showAll, filteredPersons, handleDelete }) => {
+  
   if (showAll){
     return (
-      persons.map((personObject) => <p key={personObject.id}>{personObject.name} {personObject.number}</p>)
+      persons.map((personObject) => <p key={personObject.id}>{personObject.name} {personObject.number} <button type='submit' value={personObject.id} onClick={handleDelete}>delete</button></p>)
     )
   } else {
     return (
-      filteredPersons.map((personObject) => <p key={personObject.id}>{personObject.name} {personObject.number}</p>)
+      filteredPersons.map((personObject) => <p key={personObject.id}>{personObject.name} {personObject.number} <button type='submit' onClick={handleDelete}>delete</button></p>)
     )
   }
 }
@@ -57,7 +58,7 @@ const App = () => {
   const [filteredName, setFilteredName] = useState('')
 
   const hook = () => {
-    console.log('effect')
+    // console.log('effect')
     personServices
       .getAll()
       .then(response => {
@@ -73,7 +74,7 @@ const App = () => {
     const personObject = {
       name: newName,
       number: newNumber,
-      id: persons.length + 1
+      // id: persons.length + 1
     }
     if (persons.find((person) => person.name.toLowerCase() === newName.toLowerCase() ) !== undefined) {
       alert(`${newName} is already added to phonebook`)
@@ -116,6 +117,20 @@ const App = () => {
     }
   }
 
+  const handleDelete = (event) => {
+    const person = persons.find((person) => person.id == event.target.value)
+    const id = person.id
+    // console.log(`Person: ${JSON.stringify(person)}`)
+    if (confirm(`Delete ${person.name} ?`)) {
+      personServices
+        .deletePerson(id)
+        .then((response) => {
+          console.log(`deleted the person:${JSON.stringify(response.data)}`)
+          setPersons(persons.filter((person) => person.id !== id))
+        })
+    }
+  }
+
   return (
     <div>
 
@@ -132,7 +147,12 @@ const App = () => {
       />
 
       <h2>Numbers</h2>
-      <Persons persons={persons} showAll={showAll} filteredPersons={filteredPersons} />
+      <Persons 
+        persons={persons} 
+        showAll={showAll} 
+        filteredPersons={filteredPersons} 
+        handleDelete={handleDelete}
+      />
 
     </div>
   )
