@@ -1,9 +1,15 @@
 import { useState } from 'react'
 
-const Persons = ({ persons }) => {
-  return (
-    persons.map((personObject) => <p key={personObject.id}>{personObject.name} {personObject.number}</p>)
-  )
+const Persons = ({ persons, showAll, filteredPersons }) => {
+  if (showAll){
+    return (
+      persons.map((personObject) => <p key={personObject.id}>{personObject.name} {personObject.number}</p>)
+    )
+  } else {
+    return (
+      filteredPersons.map((personObject) => <p key={personObject.id}>{personObject.name} {personObject.number}</p>)
+    )
+  }
 }
 
 function isValidNumber(number) {
@@ -17,10 +23,16 @@ function isValidNumber(number) {
 
 const App = () => {
   const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', id: 1 }
+    { name: 'Arto Hellas', number: '040-123456', id: 1 },
+    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
+    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
+    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
   ]) 
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
+  const [showAll, setShowAll] = useState(true)
+  const [filteredPersons, setFilteredPersons] = useState([])
+  const [filteredName, setFilteredName] = useState('')
 
   const handleSubmit = (event) => {
     event.preventDefault()
@@ -40,6 +52,20 @@ const App = () => {
     setNewName(event.target.value)
   }
 
+  const handleFilteredNameChange = (event) => {
+    const newFilteredName = event.target.value
+    // console.log(`New filtered name: ${newFilteredName}`)
+
+    if (newFilteredName.replace(' ', '').length === 0) setShowAll(true)
+    else {
+      setShowAll(false)
+      const newFilteredPersons = persons.filter((person) => person.name.toLowerCase().startsWith(newFilteredName.toLowerCase()))
+      setFilteredPersons(newFilteredPersons)
+    }
+    setFilteredName(newFilteredName)
+
+  }
+
   const handleNumberChange = (event) => {
     const currentNumber = event.target.value
     // console.log(`Current number: ${currentNumber}`)
@@ -53,6 +79,10 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <div>
+        filter shown with: <input value={filteredName} onChange={handleFilteredNameChange} />
+      </div>
+      <h2>add a new</h2>
       <form onSubmit={handleSubmit}>
         <div>
           name: <input value={newName} onChange={handleNameChange}/>
@@ -65,7 +95,7 @@ const App = () => {
         </div>
       </form>
       <h2>Numbers</h2>
-      <Persons persons={persons} />
+      <Persons persons={persons} showAll={showAll} filteredPersons={filteredPersons} />
     </div>
   )
 }
