@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+import personServices from './services/persons'
 
 const Persons = ({ persons, showAll, filteredPersons }) => {
   if (showAll){
@@ -58,10 +58,10 @@ const App = () => {
 
   const hook = () => {
     console.log('effect')
-    axios
-      .get('https://crispy-space-garbanzo-x5vr4vqj7vg4cp7pv-3001.app.github.dev/persons')
+    personServices
+      .getAll()
       .then(response => {
-        console.log('promise fulfilled')
+        console.log(`all persons loaded: ${JSON.stringify(response.data)}`)
         setPersons(response.data)
       })
   }
@@ -78,8 +78,14 @@ const App = () => {
     if (persons.find((person) => person.name.toLowerCase() === newName.toLowerCase() ) !== undefined) {
       alert(`${newName} is already added to phonebook`)
     } else {
-      setPersons(persons.concat(personObject))
-      setNewName('')
+      personServices
+        .create(personObject)
+        .then(response => {
+          console.log(`new person created: ${JSON.stringify(response.data)}`)
+          setPersons(persons.concat(response.data))
+          setNewName('')
+          setNewNumber('')
+        })
     }
   }
   const handleNameChange = (event) => {
