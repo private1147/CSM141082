@@ -12,6 +12,32 @@ const Persons = ({ persons, showAll, filteredPersons }) => {
   }
 }
 
+const PersonForm = ({ newName, newNumber, handleNameChange, handleNumberChange, handleSubmit }) => {
+  return (
+    <>
+    <form onSubmit={handleSubmit}>
+      <div>
+        name: <input value={newName} onChange={handleNameChange}/>
+      </div>
+      <div>
+        number: <input value={newNumber} onChange={handleNumberChange} />
+      </div>
+      <div>
+        <button type="submit">add</button>
+      </div>
+    </form>
+    </>
+  )
+}
+
+const Filter = ({ filteredName, handleFilteredNameChange }) => {
+  return (
+    <div>
+      filter shown with: <input value={filteredName} onChange={handleFilteredNameChange} />
+    </div>
+  )
+}
+
 function isValidNumber(number) {
   if (number.length === 0) return true
   const newCharCode = number.toLowerCase().charCodeAt(number.length - 1)
@@ -78,24 +104,22 @@ const App = () => {
 
   return (
     <div>
+
       <h2>Phonebook</h2>
-      <div>
-        filter shown with: <input value={filteredName} onChange={handleFilteredNameChange} />
-      </div>
+      <Filter filteredName={filteredName} handleFilteredNameChange={handleFilteredNameChange}/>
+
       <h2>add a new</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          name: <input value={newName} onChange={handleNameChange}/>
-        </div>
-        <div>
-          number: <input value={newNumber} onChange={handleNumberChange} />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+      <PersonForm 
+        newName={newName} 
+        newNumber={newNumber} 
+        handleNameChange={handleNameChange} 
+        handleNumberChange={handleNumberChange}
+        handleSubmit={handleSubmit}
+      />
+
       <h2>Numbers</h2>
       <Persons persons={persons} showAll={showAll} filteredPersons={filteredPersons} />
+      
     </div>
   )
 }
