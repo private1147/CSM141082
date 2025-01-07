@@ -71,23 +71,33 @@ const App = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault() // VERY IMPORTANT FOR PREVENTING RELOADING
-    const personObject = {
-      name: newName,
-      number: newNumber,
-      // id: persons.length + 1
-    }
-    if (persons.find((person) => person.name.toLowerCase() === newName.toLowerCase() ) !== undefined) {
-      alert(`${newName} is already added to phonebook`)
+    
+    const existingPerson = persons.find(
+      (person) => person.name.toLowerCase() === newName.toLowerCase()
+    );
+    if (existingPerson) {
+      if (confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
+        personServices
+          .update(existingPerson.id, {...existingPerson, number: newNumber})
+          .then(response => {
+            console.log(`updated person: ${JSON.stringify(response.data)}`)
+            setPersons(persons.map((person) => person.id === existingPerson.id ? response.data : person ))
+          })
+      }
     } else {
+      const personObject = {
+        name: newName,
+        number: newNumber,
+      }
       personServices
         .create(personObject)
         .then(response => {
           console.log(`new person created: ${JSON.stringify(response.data)}`)
           setPersons(persons.concat(response.data))
-          setNewName('')
-          setNewNumber('')
         })
     }
+    setNewName('')
+    setNewNumber('')
   }
   const handleNameChange = (event) => {
     setNewName(event.target.value)
