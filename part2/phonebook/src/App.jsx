@@ -40,6 +40,24 @@ const Filter = ({ filteredName, handleFilteredNameChange }) => {
   )
 }
 
+const Notification = ({ notification }) => {
+  if (notification === null || notification.message.length === 0) return null
+  const { message, isError } = notification
+  if (isError) {
+    return (
+      <div className='error'>
+        {message}
+      </div>
+    )
+  } else {
+    return (
+      <div className='info'>
+        {message}
+      </div>
+    )
+  }
+}
+
 function isValidNumber(number) {
   if (number.length === 0) return true
   const newCharCode = number.toLowerCase().charCodeAt(number.length - 1)
@@ -56,6 +74,7 @@ const App = () => {
   const [showAll, setShowAll] = useState(true)
   const [filteredPersons, setFilteredPersons] = useState([])
   const [filteredName, setFilteredName] = useState('')
+  const [notification, setNotification] = useState({ message: '', isError: false})
 
   const hook = () => {
     // console.log('effect')
@@ -82,6 +101,10 @@ const App = () => {
           .then(response => {
             console.log(`updated person: ${JSON.stringify(response.data)}`)
             setPersons(persons.map((person) => person.id === existingPerson.id ? response.data : person ))
+            setNotification({ message: `Updated ${response.data.name}'s number: ${response.data.number}`, isError: false })
+            setTimeout(() => {
+              setNotification(null)
+            }, 5000)
           })
       }
     } else {
@@ -94,6 +117,10 @@ const App = () => {
         .then(response => {
           console.log(`new person created: ${JSON.stringify(response.data)}`)
           setPersons(persons.concat(response.data))
+          setNotification({ message: `Added ${response.data.name}`, isError: false })
+          setTimeout(() => {
+            setNotification(null)
+          }, 5000)
         })
     }
     setNewName('')
@@ -141,10 +168,13 @@ const App = () => {
     }
   }
 
+
   return (
     <div>
 
       <h2>Phonebook</h2>
+      <Notification notification={notification} />
+
       <Filter filteredName={filteredName} handleFilteredNameChange={handleFilteredNameChange}/>
 
       <h2>add a new</h2>
