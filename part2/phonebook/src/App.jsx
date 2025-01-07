@@ -106,6 +106,13 @@ const App = () => {
               setNotification(null)
             }, 5000)
           })
+          .catch(error => {
+            console.log(`Provided error: ${error}`)
+            setNotification({ message: `Information of ${newName} has already been removed from the server`, isError: true })
+            setTimeout(() => {
+              setNotification(null)
+            }, 5000)
+          })
       }
     } else {
       const personObject = {
